@@ -51,66 +51,54 @@
 
   <button id="submit-btn" type="submit">Submit</button>
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script>
-  Sortable.create(document.getElementById("sortable"), {
-    animation: 150
-  });
+  <form id="hidden-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdwIQg_pHfXn8hYdcyPylqM-6SWl0tkxHippfG2VG1nfFfu3Q/formResponse" method="POST" target="_self" style="display: none;">
+    <input type="hidden" name="entry.898622384" id="form-entry">
+  </form>
 
-  document.getElementById("submit-btn").addEventListener("click", () => {
-    const sortedItems = [...document.querySelectorAll("#sortable li")].map(el => el.textContent.trim());
-    localStorage.setItem("page3result", JSON.stringify(sortedItems));
-
-    const page1result = localStorage.getItem("page1result") || "{}";
-    const page1comments = localStorage.getItem("page1comments") || "";
-
-    const page2result = localStorage.getItem("page2result") || "{}";
-    const page2comments = localStorage.getItem("page2comments") || "";
-
-    const page3result = localStorage.getItem("page3result") || "[]";
-    const page3comments = localStorage.getItem("page3comments") || "";
-
-    const combinedData = {
-      page1: {
-        result: JSON.parse(page1result),
-        comments: page1comments
-      },
-      page2: {
-        result: JSON.parse(page2result),
-        comments: page2comments
-      },
-      page3: {
-        result: JSON.parse(page3result),
-        comments: page3comments
-      }
-    };
-
-    const combinedString = JSON.stringify(combinedData);
-
-    const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdwIQg_pHfXn8hYdcyPylqM-6SWl0tkxHippfG2VG1nfFfu3Q/formResponse";
-    const entryId = "entry.898622384"; // ✅ your correct field ID
-
-    const data = new URLSearchParams();
-    data.append(entryId, combinedString);
-
-    fetch(formUrl, {
-      method: "POST",
-      body: data,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    })
-    .then(() => {
-      alert("Submission successful!");
-      localStorage.clear();
-      window.location.href = "thankyou.html";  // ✅ redirect here
-    })
-    .catch(() => {
-      alert("Submission failed, please try again.");
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script>
+    Sortable.create(document.getElementById("sortable"), {
+      animation: 150
     });
-  });
-</script>
 
+    document.getElementById("submit-btn").addEventListener("click", () => {
+      const sortedItems = [...document.querySelectorAll("#sortable li")].map(el => el.textContent.trim());
+      localStorage.setItem("page3result", JSON.stringify(sortedItems));
 
+      const page1result = localStorage.getItem("page1result") || "{}";
+      const page1comments = localStorage.getItem("page1comments") || "";
+
+      const page2result = localStorage.getItem("page2result") || "{}";
+      const page2comments = localStorage.getItem("page2comments") || "";
+
+      const page3result = localStorage.getItem("page3result") || "[]";
+      const page3comments = localStorage.getItem("page3comments") || "";
+
+      const combinedData = {
+        page1: {
+          result: JSON.parse(page1result),
+          comments: page1comments
+        },
+        page2: {
+          result: JSON.parse(page2result),
+          comments: page2comments
+        },
+        page3: {
+          result: JSON.parse(page3result),
+          comments: page3comments
+        }
+      };
+
+      // Inject combined data into hidden form and submit
+      document.getElementById("form-entry").value = JSON.stringify(combinedData);
+      document.getElementById("hidden-form").submit();
+
+      // Redirect manually after short delay (after form submission)
+      setTimeout(() => {
+        localStorage.clear();
+        window.location.href = "thankyou.html";
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
