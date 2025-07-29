@@ -1,4 +1,3 @@
-<!-- PAGE 1: Colour Sort -->
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
@@ -50,6 +49,7 @@
       align-items: center;
       font-weight: bold;
       cursor: pointer;
+      margin: 10px auto;
     }
     @media (max-width: 768px) {
       .bin {
@@ -65,7 +65,8 @@
   <div class="palette" id="palette"></div>
   <div class="delete" id="delete">X</div>
   <div class="bins" id="bins"></div>
-  <button onclick="window.location.href='page2.html'">Next</button>
+  <button id="nextBtn">Next</button>
+
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
     const colours = ["green", "blue", "purple", "#f0f", "red", "orange", "yellow", "black", "#888"];
@@ -103,7 +104,18 @@
       group: "shared",
       onAdd: e => e.item.remove()
     });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      const result = {};
+      bins.forEach(name => {
+        const bin = Array.from(document.querySelectorAll(".bin"))
+          .find(b => b.querySelector("strong").textContent === name);
+        const items = [...bin.querySelector(".bin-content").children];
+        result[name] = items.map(el => el.getAttribute("data-value"));
+      });
+      localStorage.setItem("page1Result", JSON.stringify(result));
+      window.location.href = "page2.html";
+    });
   </script>
 </body>
 </html>
-
