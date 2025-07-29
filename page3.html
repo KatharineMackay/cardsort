@@ -6,108 +6,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Final Waste Sort</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    h1 {
-      text-align: center;
-    }
-    ol {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 0;
-      list-style-position: inside;
-    }
-    li {
-      background: #fff;
-      padding: 12px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      cursor: grab;
-    }
-    button {
-      display: block;
-      margin: 20px auto;
-      padding: 14px 24px;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
+    /* your existing styles */
   </style>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
   <h1>Sort Waste Topics by Importance</h1>
-  <p style="text-align: center;">Drag to reorder the topics from most to least important to you, then click <strong>Submit</strong>.</p>
-
+  <p style="text-align:center;">...then click <strong>Submit</strong>.</p>
   <ol id="sortable">
-    <li>What goes in what bin</li>
-    <li>Where to dispose of tricky items</li>
-    <li>Recycling centre near you</li>
-    <li>Bin schedule in your area</li>
-    <li>Shop for less waste tips</li>
-    <li>Reuse & Repurpose tips</li>
-    <li>Common waste mistakes</li>
-    <li>Tips to reduce your household waste</li>
-    <li>Waste incentives in your area</li>
-    <li>Weight limit for bins</li>
-    <li>Information on the impact of waste</li>
-    <li>How you can make a difference</li>
-    <li>Printable waste sorting chart</li>
+    <!-- list items -->
   </ol>
+  <button id="submit-btn">Submit</button>
 
-  <button id="submit-btn" type="submit">Submit</button>
+  <!-- Hidden form to submit to Google Forms -->
+  <form id="hidden-form"
+        action="https://docs.google.com/forms/d/e/1bq4GMn4rs_uoLr2UpsY_GK0rypVLFsoO344CbZQTC-E/formResponse"
+        method="POST" target="hidden_iframe" style="display:none;">
+    <input type="hidden" name="entry.898622384" id="entry-field" value="" />
+  </form>
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
 
   <script>
-    // Enable drag and drop sorting
-    Sortable.create(document.getElementById("sortable"), {
-      animation: 150
-    });
+    Sortable.create(document.getElementById("sortable"), { animation:150 });
 
-    // Handle submit
     document.getElementById("submit-btn").addEventListener("click", () => {
-      const sortedItems = [...document.querySelectorAll("#sortable li")].map(el => el.textContent.trim());
-      localStorage.setItem("page3result", JSON.stringify(sortedItems));
+      const sorted = [...document.querySelectorAll("#sortable li")].map(el => el.textContent.trim());
+      localStorage.setItem("page3result", JSON.stringify(sorted));
 
-      const combinedData = {
-        page1: {
-          result: JSON.parse(localStorage.getItem("page1result") || "{}"),
-          comments: localStorage.getItem("page1comments") || ""
-        },
-        page2: {
-          result: JSON.parse(localStorage.getItem("page2result") || "{}"),
-          comments: localStorage.getItem("page2comments") || ""
-        },
-        page3: {
-          result: sortedItems,
-          comments: localStorage.getItem("page3comments") || ""
-        }
+      const combined = {
+        page1: { result: JSON.parse(localStorage.getItem("page1result") || "{}"), comments: localStorage.getItem("page1comments") || "" },
+        page2: { result: JSON.parse(localStorage.getItem("page2result") || "{}"), comments: localStorage.getItem("page2comments") || "" },
+        page3: { result: sorted, comments: localStorage.getItem("page3comments") || "" }
       };
 
-      const combinedString = JSON.stringify(combinedData);
+      document.getElementById("entry-field").value = JSON.stringify(combined);
+      document.getElementById("hidden-form").submit();
 
-      const formUrl = "https://docs.google.com/forms/d/e/1bq4GMn4rs_uoLr2UpsY_GK0rypVLFsoO344CbZQTC-E/formResponse";
-      const entryId = "entry.898622384"; // Update this if necessary
-
-      const data = new URLSearchParams();
-      data.append(entryId, combinedString);
-
-      fetch(formUrl, {
-        method: "POST",
-        body: data,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      })
-      .then(() => {
-        alert("Submission successful!");
-        localStorage.clear();
+      setTimeout(() => {
         window.location.href = "thankyou.html";
-      })
-      .catch(() => {
-        alert("Submission failed, please try again.");
-      });
+        localStorage.clear();
+      }, 1000);
     });
   </script>
 </body>
