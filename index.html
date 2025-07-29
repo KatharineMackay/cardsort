@@ -1,3 +1,4 @@
+<!-- PAGE 1: Colour Sort -->
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
@@ -13,56 +14,17 @@
     h1, .instructions {
       text-align: center;
     }
-    .palette-container {
+    .palette, .bins, .bin {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .palette {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
     }
     .colour {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       cursor: grab;
-      box-shadow: 0 0 3px rgba(0,0,0,0.2);
-      transition: box-shadow 0.2s ease;
-    }
-    .colour:active {
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-    }
-    .delete {
-      width: 60px;
-      height: 60px;
-      background: #f55;
-      border-radius: 50%;
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.8rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      flex-shrink: 0;
-      transition: background-color 0.3s ease;
-    }
-    .delete:hover {
-      background: #d33;
-    }
-    .bins {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
     }
     .bin {
       border: 2px dashed #ccc;
@@ -70,7 +32,6 @@
       min-height: 100px;
       min-width: 120px;
       background: #fff;
-      display: flex;
       flex-direction: column;
       align-items: center;
     }
@@ -78,13 +39,22 @@
       min-height: 60px;
       width: 100%;
     }
+    .delete {
+      width: 50px;
+      height: 50px;
+      background: #f55;
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
     @media (max-width: 768px) {
       .bin {
         min-width: 100px;
         font-size: 0.8rem;
-      }
-      .palette-container {
-        justify-content: center;
       }
     }
   </style>
@@ -92,16 +62,10 @@
 <body>
   <h1>Sort the Colours</h1>
   <p class="instructions">Drag the colours into the bins. Remove by dragging to the red X.</p>
-  
-  <div class="palette-container">
-    <div class="palette" id="palette"></div>
-    <div class="delete" id="delete">X</div>
-  </div>
-  
+  <div class="palette" id="palette"></div>
+  <div class="delete" id="delete">X</div>
   <div class="bins" id="bins"></div>
-  
-  <button id="nextBtn">Next</button>
-
+  <button onclick="window.location.href='page2.html'">Next</button>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
     const colours = ["green", "blue", "purple", "#f0f", "red", "orange", "yellow", "black", "#888"];
@@ -109,7 +73,6 @@
 
     const palette = document.getElementById("palette");
     const binsDiv = document.getElementById("bins");
-    const deleteBin = document.getElementById("delete");
 
     colours.forEach(col => {
       const div = document.createElement("div");
@@ -136,21 +99,9 @@
       animation: 150
     });
 
-    Sortable.create(deleteBin, {
+    Sortable.create(document.getElementById("delete"), {
       group: "shared",
       onAdd: e => e.item.remove()
-    });
-
-    document.getElementById("nextBtn").addEventListener("click", () => {
-      const result = {};
-      bins.forEach(name => {
-        const bin = Array.from(document.querySelectorAll(".bin"))
-          .find(b => b.querySelector("strong").textContent === name);
-        const items = [...bin.querySelector(".bin-content").children];
-        result[name] = items.map(el => el.getAttribute("data-value"));
-      });
-      localStorage.setItem("page1Result", JSON.stringify(result));
-      window.location.href = "page2.html";
     });
   </script>
 </body>
