@@ -104,24 +104,23 @@
       data.append(entryId, combinedString);
 
       // Submit to Google Form
-
       fetch(formUrl, {
         method: "POST",
-        mode: "no-cors",
-        body: data
-      });
-      
-      // Show success message and redirect no matter what (since we can't confirm)
-      alert("Submission sent!");
-      localStorage.clear();
-      window.location.href = "thankyou.html";
-
+        body: data,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
       .then(() => {
         alert("Submission successful!");
         localStorage.clear();
         window.location.href = "thankyou.html"; // Redirect after success
       })
+      .catch(() => {
+        alert("Submission failed, please try again.");
+      });
     });
   </script>
+
 </body>
 </html>
