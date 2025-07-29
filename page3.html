@@ -1,19 +1,12 @@
-<!-- PAGE 3: Final Sort and Submit -->
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Final Waste Sort</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    h1 {
-      text-align: center;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { text-align: center; }
     ol {
       max-width: 600px;
       margin: 20px auto;
@@ -38,9 +31,7 @@
 </head>
 <body>
   <h1>Sort Waste Topics by Importance</h1>
-  <p style="text-align: center;">
-    Drag to reorder the topics from most to least important to you, then click <strong>Submit</strong>.
-  </p>
+  <p style="text-align: center;">Drag to reorder the topics from most to least important to you, then click <strong>Submit</strong>.</p>
 
   <ol id="sortable">
     <li>What goes in what bin</li>
@@ -62,66 +53,18 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
-    // Initialize sortable list
     Sortable.create(document.getElementById("sortable"), {
       animation: 150
     });
 
     document.getElementById("submit-btn").addEventListener("click", () => {
       const sortedItems = [...document.querySelectorAll("#sortable li")].map(el => el.textContent.trim());
-      localStorage.setItem("page3result", JSON.stringify(sortedItems));
+      console.log("Sorted items:", sortedItems);
 
-      // Get all saved results and comments from localStorage
-      const page1result = localStorage.getItem("page1result") || "{}";
-      const page1comments = localStorage.getItem("page1comments") || "";
+      // For testing, just alert the sorted items for now
+      alert("Sorted items:\n" + sortedItems.join("\n"));
 
-      const page2result = localStorage.getItem("page2result") || "{}";
-      const page2comments = localStorage.getItem("page2comments") || "";
-
-      const page3result = localStorage.getItem("page3result") || "[]";
-      const page3comments = localStorage.getItem("page3comments") || "";
-
-      // Combine all data into one object
-      const combinedData = {
-        page1: {
-          result: JSON.parse(page1result),
-          comments: page1comments
-        },
-        page2: {
-          result: JSON.parse(page2result),
-          comments: page2comments
-        },
-        page3: {
-          result: JSON.parse(page3result),
-          comments: page3comments
-        }
-      };
-
-      const combinedString = JSON.stringify(combinedData);
-
-      // Google Form submission URL and entry ID
-      const formUrl = "https://docs.google.com/forms/d/e/1bq4GMn4rs_uoLr2UpsY_GK0rypVLFsoO344CbZQTC-E/formResponse";
-      const entryId = "entry.521820562";
-
-      const data = new URLSearchParams();
-      data.append(entryId, combinedString);
-
-      // Submit the data to Google Form
-      fetch(formUrl, {
-        method: "POST",
-        body: data,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      })
-      .then(() => {
-        alert("Submission successful!");
-        localStorage.clear();
-        window.location.href = "thankyou.html";  // Redirect to thank you page
-      })
-      .catch(() => {
-        alert("Submission failed, please try again.");
-      });
+      // Here you would implement your localStorage + Google Forms submission logic as needed
     });
   </script>
 </body>
