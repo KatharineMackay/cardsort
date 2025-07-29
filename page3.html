@@ -72,105 +72,75 @@
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <script>
-    Sortable.create(document.getElementById("sortable"), {
-      animation: 150,
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+  // Initialize Sortable for the list
+  Sortable.create(document.getElementById("sortable"), {
+    animation: 150
+  });
+
+  document.getElementById("submit-btn").addEventListener("click", () => {
+    // Get sorted items text content
+    const sortedItems = [...document.querySelectorAll("#sortable li")].map(el => el.textContent.trim());
+
+    // Save page 3 sort order in localStorage
+    localStorage.setItem("page3result", JSON.stringify(sortedItems));
+
+    // Get all saved results and comments from previous pages
+    const page1result = localStorage.getItem("page1result") || "{}";
+    const page1comments = localStorage.getItem("page1comments") || "";
+
+    const page2result = localStorage.getItem("page2result") || "{}";
+    const page2comments = localStorage.getItem("page2comments") || "";
+
+    const page3result = localStorage.getItem("page3result") || "[]";
+    const page3comments = localStorage.getItem("page3comments") || "";
+
+    // Combine all data into one object
+    const combinedData = {
+      page1: {
+        result: JSON.parse(page1result),
+        comments: page1comments
+      },
+      page2: {
+        result: JSON.parse(page2result),
+        comments: page2comments
+      },
+      page3: {
+        result: JSON.parse(page3result),
+        comments: page3comments
+      }
+    };
+
+    // Convert combined data to JSON string
+    const combinedString = JSON.stringify(combinedData);
+
+    // Google Form submission URL and entry ID
+    const formUrl = "https://docs.google.com/forms/d/e/1bq4GMn4rs_uoLr2UpsY_GK0rypVLFsoO344CbZQTC-E/formResponse";
+    const entryId = "entry.898622384";
+
+    // Prepare form data
+    const data = new URLSearchParams();
+    data.append(entryId, combinedString);
+
+    // Submit form data via fetch POST
+    fetch(formUrl, {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    })
+    .then(() => {
+      alert("Submission successful!");
+      localStorage.clear();  // Optional: clear stored data
+      window.location.href = "thankyou.html";  // Redirect to thank you page
+    })
+    .catch(() => {
+      alert("Submission failed, please try again.");
     });
+  });
+</script>
 
-    document.getElementById("submit-btn").addEventListener("click", () => {
-      // Get the sorted topics from page 3
-      const sortedItems = [...document.querySelectorAll("#sortable li")].map(el =>
-        el.textContent.trim()
-      );
-
-      // Save the sorted order to localStorage (optional)
-      localStorage.setItem("page3sort", JSON.stringify(sortedItems));
-
-      // Retrieve results and comments from pages 1 and 2
-      const page1result = localStorage.getItem("page1result") || "{}";
-      const page1comments = localStorage.getItem("page1comments") || "";
-
-      const page2result = localStorage.getItem("page2result") || "{}";
-      const page2comments = localStorage.getItem("page2comments") || "";
-
-      // Combine all results into one object
-      const combinedData = {
-        page1: { result: JSON.parse(page1result), comments: page1comments },
-        page2: { result: JSON.parse(page2result), comments: page2comments },
-        page3: { result: sortedItems, comments: "" },
-      };
-
-      // Convert to JSON string
-      const combinedString = JSON.stringify(combinedData);
-
-      // Put the JSON string into the hidden input field
-      document.getElementById("entry-field").value = combinedString;
-
-      // Submit the hidden form (which posts to Google Form)
-      document.getElementById("hidden-form").submit();
-
-      // Redirect to thank you page after 1.5 seconds (adjust as needed)
-      setTimeout(() => {
-        window.location.href = "thankyou.html";
-      }, 1500);
-
-      // Get all saved results and comments
-const page1result = localStorage.getItem("page1result") || "{}";
-const page1comments = localStorage.getItem("page1comments") || "";
-
-const page2result = localStorage.getItem("page2result") || "{}";
-const page2comments = localStorage.getItem("page2comments") || "";
-
-const page3result = localStorage.getItem("page3result") || "{}";
-const page3comments = localStorage.getItem("page3comments") || "";
-
-// Combine all data into one object
-const combinedData = {
-  page1: {
-    result: JSON.parse(page1result),
-    comments: page1comments
-  },
-  page2: {
-    result: JSON.parse(page2result),
-    comments: page2comments
-  },
-  page3: {
-    result: JSON.parse(page3result),
-    comments: page3comments
-  }
-};
-
-// Convert to JSON string for submission
-const combinedString = JSON.stringify(combinedData);
-
-// Google Form submission URL
-const formUrl = "https://docs.google.com/forms/d/e/1bq4GMn4rs_uoLr2UpsY_GK0rypVLFsoO344CbZQTC-E/formResponse";
-
-// Your Google Form single entry ID
-const entryId = "entry.898622384";
-
-const data = new URLSearchParams();
-data.append(entryId, combinedString);
-
-// Submit data to Google Form
-fetch(formUrl, {
-  method: "POST",
-  body: data,
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  }
-})
-.then(() => {
-  alert("Submission successful!");
-  localStorage.clear();  // optional: clear storage after submit
-  window.location.href = "thankyou.html";  // optional: redirect after submit
-})
-.catch(() => {
-  alert("Submission failed, please try again.");
-});
-
-    });
-  </script>
 </body>
 </html>
