@@ -88,47 +88,29 @@
     const combinedString = JSON.stringify(combinedData);
 
     const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdwIQg_pHfXn8hYdcyPylqM-6SWl0tkxHippfG2VG1nfFfu3Q/formResponse";
-    const entryId = "entry.898622384";
+    const entryId = "entry.898622384"; // ✅ your correct field ID
 
-
-    // Create form for submission to bypass CORS
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = formUrl;
-    form.target = '_self';  // submit in same tab
-    form.style.display = 'none';
-
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = entryId;
-    input.value = combinedString;
-
-    form.appendChild(input);
-    document.body.appendChild(form);
+    const data = new URLSearchParams();
+    data.append(entryId, combinedString);
 
     fetch(formUrl, {
-    method: "POST",
-    body: data,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
     })
     .then(() => {
       alert("Submission successful!");
       localStorage.clear();
-      window.location.href = "thankyou.html";  // Redirect here instead of Google
+      window.location.href = "thankyou.html";  // ✅ redirect here
     })
     .catch(() => {
       alert("Submission failed, please try again.");
     });
-
-
-    form.submit();
-
-    // Clear localStorage after a short delay
-    setTimeout(() => localStorage.clear(), 1000);
   });
 </script>
+
 
 </body>
 </html>
