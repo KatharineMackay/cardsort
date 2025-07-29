@@ -1,9 +1,10 @@
+<!-- PAGE 2: Symbol Sort -->
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sort the Symbols</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card Sort: Symbols</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,9 +20,15 @@
       justify-content: center;
       gap: 10px;
     }
-    .icon {
-      width: 60px;
-      height: 60px;
+    .symbol {
+      font-size: 2rem;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eee;
+      border-radius: 8px;
       cursor: grab;
     }
     .bin {
@@ -38,8 +45,8 @@
       width: 100%;
     }
     .delete {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       background: #f55;
       border-radius: 50%;
       color: #fff;
@@ -48,7 +55,6 @@
       align-items: center;
       font-weight: bold;
       cursor: pointer;
-      margin: 10px auto;
     }
     @media (max-width: 768px) {
       .bin {
@@ -61,48 +67,24 @@
 <body>
   <h1>Sort the Symbols</h1>
   <p class="instructions">Drag the symbols into the bins. Remove by dragging to the red X.</p>
-  
   <div class="palette" id="palette"></div>
   <div class="delete" id="delete">X</div>
   <div class="bins" id="bins"></div>
-  
-  <button id="submitBtn">Submit</button>
-  
+  <button onclick="window.location.href='page3.html'">Next</button>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
-    const icons = [
-      "apple core.png",
-      "banana peel.png",
-      "block & bolt.png",
-      "broken cord.png",
-      "broken glass.png",
-      "broken lightbulb.png",
-      "broken wine glass.png",
-      "dump truck.png",
-      "garbage bin.png",
-      "leaf.png",
-      "pieces of glass.png",
-      "plastic bag.png",
-      "recycle.png",
-      "screw.png",
-      "smoothie cup.png",
-      "softdrink can.png",
-      "trash bag.png",
-      "tuna can.png",
-      "water bottle.png"
-    ];
+    const symbols = ["♻️", "🪙", "🍷", "💻", "🗑️", "🍎"];
     const bins = ["Recycling", "Metal", "Glass", "E-waste", "Landfill", "Compost"];
 
     const palette = document.getElementById("palette");
     const binsDiv = document.getElementById("bins");
 
-    icons.forEach(fn => {
-      const img = document.createElement("img");
-      img.className = "icon";
-      img.src = `icons/${fn}`;
-      img.alt = fn;
-      img.setAttribute("data-value", fn);
-      palette.appendChild(img);
+    symbols.forEach(symbol => {
+      const div = document.createElement("div");
+      div.className = "symbol";
+      div.textContent = symbol;
+      div.setAttribute("data-value", symbol);
+      palette.appendChild(div);
     });
 
     bins.forEach(name => {
@@ -125,47 +107,6 @@
     Sortable.create(document.getElementById("delete"), {
       group: "shared",
       onAdd: e => e.item.remove()
-    });
-
-    document.getElementById("submitBtn").addEventListener("click", () => {
-      // Get Page 1 results from localStorage
-      const page1Data = JSON.parse(localStorage.getItem("page1Result") || "{}");
-
-      // Get Page 2 results
-      const page2Result = {};
-      bins.forEach(name => {
-        const bin = Array.from(document.querySelectorAll(".bin"))
-          .find(b => b.querySelector("strong").textContent === name);
-        const items = [...bin.querySelector(".bin-content").children];
-        page2Result[name] = items.map(el => el.getAttribute("data-value"));
-      });
-
-      // Combine results
-      const combinedResult = {
-        colours: page1Data,
-        symbols: page2Result
-      };
-
-      // Convert to string for Google Form submission
-      const fullResult = JSON.stringify(combinedResult, null, 2);
-
-      // Google Form submission details
-      const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdwIQg_pHfXn8hYdcyPylqM-6SWl0tkxHippfG2VG1nfFfu3Q/formResponse";
-      const entryID = "entry.898622384";
-
-      const formData = new FormData();
-      formData.append(entryID, fullResult);
-
-      fetch(formURL, {
-        method: "POST",
-        mode: "no-cors",
-        body: formData
-      }).then(() => {
-        localStorage.removeItem("page1Result"); // clear stored data after submission
-        window.location.href = "page3.html";
-      }).catch(() => {
-        alert("Submission failed. Please try again.");
-      });
     });
   </script>
 </body>
