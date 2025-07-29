@@ -70,7 +70,6 @@
   
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
-    // Your icons list (update filenames as needed)
     const icons = [
       "apple core.png",
       "banana peel.png",
@@ -128,18 +127,16 @@
       onAdd: e => e.item.remove()
     });
 
-    // Submission handler
     document.getElementById("submitBtn").addEventListener("click", () => {
-      // Collect Page 1 data from localStorage
+      // Get Page 1 results from localStorage
       const page1Data = JSON.parse(localStorage.getItem("page1Result") || "{}");
 
-      // Collect Page 2 data
+      // Get Page 2 results
       const page2Result = {};
       bins.forEach(name => {
-        const binContent = document.querySelector(`.bin[data-name="${name}"] .bin-content`);
-        // If not found by data-name, fallback:
-        const binContentFallback = Array.from(document.querySelectorAll(".bin")).find(bin => bin.querySelector("strong").textContent === name).querySelector(".bin-content");
-        const items = [...(binContent || binContentFallback).children];
+        const bin = Array.from(document.querySelectorAll(".bin"))
+          .find(b => b.querySelector("strong").textContent === name);
+        const items = [...bin.querySelector(".bin-content").children];
         page2Result[name] = items.map(el => el.getAttribute("data-value"));
       });
 
@@ -149,14 +146,13 @@
         symbols: page2Result
       };
 
-      // Format as JSON string
+      // Convert to string for Google Form submission
       const fullResult = JSON.stringify(combinedResult, null, 2);
 
-      // Google Form submission URL and field name (replace with your own)
+      // Google Form submission details
       const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdwIQg_pHfXn8hYdcyPylqM-6SWl0tkxHippfG2VG1nfFfu3Q/formResponse";
       const entryID = "entry.898622384";
 
-      // Prepare form data
       const formData = new FormData();
       formData.append(entryID, fullResult);
 
@@ -165,9 +161,7 @@
         mode: "no-cors",
         body: formData
       }).then(() => {
-        // Clear stored data after submit
-        localStorage.removeItem("page1Result");
-        // Redirect to page 3
+        localStorage.removeItem("page1Result"); // clear stored data after submission
         window.location.href = "page3.html";
       }).catch(() => {
         alert("Submission failed. Please try again.");
