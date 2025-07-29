@@ -22,13 +22,10 @@
     }
     .symbol {
       font-size: 2rem;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #eee;
-      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       cursor: grab;
     }
     .bin {
@@ -56,12 +53,6 @@
       font-weight: bold;
       cursor: pointer;
     }
-    @media (max-width: 768px) {
-      .bin {
-        min-width: 100px;
-        font-size: 0.8rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -70,27 +61,27 @@
   <div class="palette" id="palette"></div>
   <div class="delete" id="delete">X</div>
   <div class="bins" id="bins"></div>
-  <button onclick="window.location.href='page3.html'">Next</button>
+  <button onclick="saveAndNext()">Next</button>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
-    const symbols = ["♻️", "🪙", "🍷", "💻", "🗑️", "🍎"];
+    const symbols = ["♻️", "🔋", "📦", "💻", "🗑️", "🌱", "♻️", "🪙", "⚠️"];
     const bins = ["Recycling", "Metal", "Glass", "E-waste", "Landfill", "Compost"];
 
     const palette = document.getElementById("palette");
     const binsDiv = document.getElementById("bins");
 
-    symbols.forEach(symbol => {
+    symbols.forEach(sym => {
       const div = document.createElement("div");
       div.className = "symbol";
-      div.textContent = symbol;
-      div.setAttribute("data-value", symbol);
+      div.textContent = sym;
+      div.setAttribute("data-value", sym);
       palette.appendChild(div);
     });
 
     bins.forEach(name => {
       const bin = document.createElement("div");
       bin.className = "bin";
-      bin.innerHTML = `<strong>${name}</strong><div class="bin-content"></div>`;
+      bin.innerHTML = `<strong>${name}</strong><div class="bin-content" data-bin="${name}"></div>`;
       binsDiv.appendChild(bin);
       Sortable.create(bin.querySelector(".bin-content"), {
         group: "shared",
@@ -108,6 +99,16 @@
       group: "shared",
       onAdd: e => e.item.remove()
     });
+
+    function saveAndNext() {
+      const result = {};
+      document.querySelectorAll(".bin-content").forEach(bin => {
+        const name = bin.dataset.bin;
+        result[name] = [...bin.children].map(c => c.getAttribute("data-value"));
+      });
+      localStorage.setItem("page2result", JSON.stringify(result));
+      window.location.href = "page3.html";
+    }
   </script>
 </body>
 </html>
