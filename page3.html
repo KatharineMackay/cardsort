@@ -106,19 +106,21 @@
       // Submit to Google Form
 
       fetch(formUrl, {
-      method: "POST",
-      mode: "no-cors",           // <-- Add this line
-      body: data
-      })
+        method: "POST",
+        mode: "no-cors",
+        body: data
+      });
+      
+      // Show success message and redirect no matter what (since we can't confirm)
+      alert("Submission sent!");
+      localStorage.clear();
+      window.location.href = "thankyou.html";
 
       .then(() => {
         alert("Submission successful!");
         localStorage.clear();
         window.location.href = "thankyou.html"; // Redirect after success
       })
-      .catch(() => {
-        alert("Submission failed, please try again.");
-      });
     });
   </script>
 </body>
