@@ -65,7 +65,7 @@
   <div class="palette" id="palette"></div>
   <div class="delete" id="delete">X</div>
   <div class="bins" id="bins"></div>
-  <button onclick="window.location.href='page2.html'">Next</button>
+  <button onclick="saveAndNext()">Next</button>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
     const colours = ["green", "blue", "purple", "#f0f", "red", "orange", "yellow", "black", "#888"];
@@ -82,12 +82,14 @@
       palette.appendChild(div);
     });
 
+    const binData = {};
+
     bins.forEach(name => {
       const bin = document.createElement("div");
       bin.className = "bin";
-      bin.innerHTML = `<strong>${name}</strong><div class="bin-content"></div>`;
+      bin.innerHTML = `<strong>${name}</strong><div class="bin-content" data-bin="${name}"></div>`;
       binsDiv.appendChild(bin);
-      Sortable.create(bin.querySelector(".bin-content"), {
+      const sortable = Sortable.create(bin.querySelector(".bin-content"), {
         group: "shared",
         animation: 150
       });
@@ -103,6 +105,16 @@
       group: "shared",
       onAdd: e => e.item.remove()
     });
+
+    function saveAndNext() {
+      const result = {};
+      document.querySelectorAll(".bin-content").forEach(bin => {
+        const name = bin.dataset.bin;
+        result[name] = [...bin.children].map(c => c.getAttribute("data-value"));
+      });
+      localStorage.setItem("page1result", JSON.stringify(result));
+      window.location.href = "page2.html";
+    }
   </script>
 </body>
 </html>
